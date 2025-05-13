@@ -19,8 +19,8 @@ app.get("/values",(req,res)=>{
 })
 
 app.get("/values/:id",(req,res)=>{
-  const val = data.find(t=> t.id=== parseInt(req/params/id))
-  if(!tea){
+  const val = data.find(t=> t.id=== parseInt(req.params.id))
+  if(!val){
     return res.status(404).send("ERROR NOT FOUND")
   }
   res.status(200).send(val)
