@@ -26,6 +26,27 @@ app.get("/values/:id",(req,res)=>{
   res.status(200).send(val)
 })
 
+app.put("/values/:id",(req,res)=>{
+  const val = data.find(t=> t.id=== parseInt(req.params.id))
+  if(!val){
+    return res.status(404).send("ERROR NOT FOUND")
+  }
+  const {name,price} = req.body
+  val.name = name
+  val.price = price
+  res.status(200).send(val)
+})
+
+app.delete("/values/:id",(req,res)=>{
+ const index = data.findIndex(t=>t.id === parseInt(req.params.id))
+ if(index=== -1){
+  return res.status(404).send("Error Value Not Found")
+ }
+ data.splice(index,1)
+ return res.status(204).send("Deleted Successfully")
+
+})
+
 app.listen(port,()=>{
   console.log(`Server is listening at port : ${port}....`)
 })
