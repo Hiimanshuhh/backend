@@ -1,52 +1,71 @@
-import express from "express"
-const app = express()
-const port = 3000
+// Importing the express module
+import express from "express";
 
-app.use(express.json())
+// Creating an Express application
+const app = express();
 
-let data = []
-let nextId = 1
+// Setting the port number the server will listen on
+const port = 3000;
 
-app.post("/values",(req,res)=>{
-  const {name,price} = req.body
-  const newData = {id: nextId++, name, price}
-  data.push(newData)
-  res.status(201).send(newData)
-})
+// Middleware to parse incoming JSON data in request bodies
+app.use(express.json());
 
-app.get("/values",(req,res)=>{
-  res.status(200).send(data)
-})
+// In-memory array to store data (like a temporary database)
+let data = [];
 
-app.get("/values/:id",(req,res)=>{
-  const val = data.find(t=> t.id=== parseInt(req.params.id))
-  if(!val){
-    return res.status(404).send("ERROR NOT FOUND")
+// To assign a unique ID to each new entry
+let nextId = 1;
+
+// ROUTE: POST /values
+// Purpose: To add a new value (object with name and price) to the data array
+app.post("/values", (req, res) => {
+  const { name, price } = req.body; // Extracting name and price from request body
+  const newData = { id: nextId++, name, price }; // Creating a new object with unique ID
+  data.push(newData); // Adding the new object to the array
+  res.status(201).send(newData); // Sending back the newly created object with 201 status (Created)
+});
+
+// ROUTE: GET /values
+// Purpose: To get all the values stored in the array
+app.get("/values", (req, res) => {
+  res.status(200).send(data); // Sending all stored values with 200 status (OK)
+});
+
+// ROUTE: GET /values/:id
+// Purpose: To get a specific value by its ID
+app.get("/values/:id", (req, res) => {
+  const val = data.find(t => t.id === parseInt(req.params.id)); // Finding the object with matching ID
+  if (!val) {
+    return res.status(404).send("ERROR NOT FOUND"); // If not found, send 404 status
   }
-  res.status(200).send(val)
-})
+  res.status(200).send(val); // If found, send the object with 200 status
+});
 
-app.put("/values/:id",(req,res)=>{
-  const val = data.find(t=> t.id=== parseInt(req.params.id))
-  if(!val){
-    return res.status(404).send("ERROR NOT FOUND")
+// ROUTE: PUT /values/:id
+// Purpose: To update the name and price of a specific value by its ID
+app.put("/values/:id", (req, res) => {
+  const val = data.find(t => t.id === parseInt(req.params.id)); // Find the object to update
+  if (!val) {
+    return res.status(404).send("ERROR NOT FOUND"); // If not found, return error
   }
-  const {name,price} = req.body
-  val.name = name
-  val.price = price
-  res.status(200).send(val)
-})
+  const { name, price } = req.body; // Extract updated values from request
+  val.name = name; // Update name
+  val.price = price; // Update price
+  res.status(200).send(val); // Return the updated object
+});
 
-app.delete("/values/:id",(req,res)=>{
- const index = data.findIndex(t=>t.id === parseInt(req.params.id))
- if(index=== -1){
-  return res.status(404).send("Error Value Not Found")
- }
- data.splice(index,1)
- return res.status(204).send("Deleted Successfully")
+// ROUTE: DELETE /values/:id
+// Purpose: To delete a specific value by its ID
+app.delete("/values/:id", (req, res) => {
+  const index = data.findIndex(t => t.id === parseInt(req.params.id)); // Find the index of object to delete
+  if (index === -1) {
+    return res.status(404).send("Error Value Not Found"); // If not found, return error
+  }
+  data.splice(index, 1); // Remove the object from the array
+  return res.status(204).send("Deleted Successfully"); // 204 means successful deletion with no content
+});
 
-})
-
-app.listen(port,()=>{
-  console.log(`Server is listening at port : ${port}....`)
-})
+// Start the server and listen on the defined port
+app.listen(port, () => {
+  console.log(`Server is listening at port : ${port}....`);
+});
