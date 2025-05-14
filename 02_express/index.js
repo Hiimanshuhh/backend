@@ -25,7 +25,7 @@ app.post("/values", (req, res) => {
   res.status(201).send(newData); // Sending back the newly created object with 201 status (Created)
 });
 
-// ROUTE: GET /values
+// ROUTE:  GET /values
 // Purpose: To get all the values stored in the array
 app.get("/values", (req, res) => {
   res.status(200).send(data); // Sending all stored values with 200 status (OK)
